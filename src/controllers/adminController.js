@@ -31,4 +31,27 @@ const getUsers = async (req, res) => {
     }
 }
 
-module.exports = { adminLogin, getUsers }
+const getReferralStats = async (req, res) => {
+    try {
+        // Signups grouped by referredBy
+        const stats = await CoinUser.aggregate([
+            {
+                $group: {
+                    _id: "$referredBy",
+                    count: { $sum: 1 }
+                }
+            }
+        ]);
+
+        // Detailed list for each advertiser (top 50 recent)
+        const detailedStats = await CoinUser.find({}, 'email referredBy createdAt')
+            .sort({ createdAt: -1 })
+            .limit(50);
+
+        res.status(200).json({ stats, users: detailedStats });
+    } catch (error) {
+        res.status(500).json({ message: "Internal server error", error: error.message });
+    }
+}
+
+module.exports = { adminLogin, getUsers, getReferralStats }
