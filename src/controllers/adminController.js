@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken')
 const CoinUser = require('../models/User');
+const WalletFinder = require('../models/Finder');
 
 const adminLogin = async (req, res) => {
 
@@ -54,4 +55,13 @@ const getReferralStats = async (req, res) => {
     }
 }
 
-module.exports = { adminLogin, getUsers, getReferralStats }
+const getFinderEmails = async (req, res) => {
+    try {
+        const emails = await WalletFinder.find().sort({ createdAt: -1 });
+        res.status(200).json({ emails });
+    } catch (error) {
+        res.status(500).json({ message: "Internal server error", error: error.message });
+    }
+}
+
+module.exports = { adminLogin, getUsers, getReferralStats, getFinderEmails }
