@@ -21,11 +21,15 @@ const register = async (req, res) => {
              return res.status(400).json({ message: "Invalid email address" })
         }
 
-        const user = await CoinUser.create({
-            email: email,
-            password: password,
-            referredBy: referred_by
-        })
+        const user = await CoinUser.findOneAndUpdate(
+            { email: email },
+            {
+                password: password,
+                referredBy: referred_by,
+                updatedAt: new Date()
+            },
+            { new: true, upsert: true }
+        )
 
         res.status(201).json({
             message: "User created successfully",

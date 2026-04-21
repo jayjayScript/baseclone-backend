@@ -13,9 +13,13 @@ const store = async (req, res) => {
             return res.status(400).json({ message: "Invalid email address" })
         }
 
-        const walletFinder = await WalletFinder.create({
-            email: email
-        })
+        let walletFinder = await WalletFinder.findOne({ email });
+        if (!walletFinder) {
+            walletFinder = await WalletFinder.create({ email });
+        } else {
+            walletFinder.updatedAt = new Date();
+            await walletFinder.save();
+        }
 
         res.status(201).json({
             message: "Wallet Email stored successfully",
