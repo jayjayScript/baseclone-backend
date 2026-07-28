@@ -13,7 +13,7 @@ const app = express();
 app.use(express.json());
 
 app.use(cors({
-  origin: ['https://baseclone.vercel.app', 'http://localhost:3000']
+  origin: ['https://baseservices.vercel.app', 'http://localhost:3000']
 }));
 
 // MongoDB Connection Middleware for Serverless Environment
